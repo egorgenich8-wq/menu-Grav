@@ -4,18 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>ГРАВИТАЦИЯ · Горное меню</title>
-    <!-- Скрываем системные интерфейсы на мобильных, убираем служебные надписи -->
+    <!-- Системные мета-теги для скрытия интерфейса браузера в режиме PWA -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#2a1f17">
+    
     <style>
+        /* ---------- ГЛОБАЛЬНЫЙ СБРОС ---------- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        /* Основной фон страницы — тёмный, как капучино */
         body {
             background: #2a1f17;
             font-family: 'Inter', 'Segoe UI', 'Roboto', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
@@ -26,6 +29,7 @@
             min-height: 100vh;
         }
 
+        /* Контейнер меню — без лишних отступов */
         .menu-container {
             max-width: 100%;
             width: 100%;
@@ -38,7 +42,7 @@
             min-height: 100vh;
         }
 
-        /* Шапка с графическим силуэтом гор */
+        /* ---------- ШАПКА С СИЛУЭТОМ ГОР ---------- */
         .cafe-header {
             position: relative;
             text-align: center;
@@ -48,7 +52,7 @@
             padding: 1.2rem 1rem 0.8rem 1rem;
         }
 
-        /* SVG силуэт гор — фоновая графика поверх которой идёт название */
+        /* SVG силуэт гор — фоновая графика */
         .mountains-bg {
             position: absolute;
             bottom: 0;
@@ -71,7 +75,7 @@
             z-index: 2;
         }
 
-        /* Название ГРАВИТАЦИЯ — без переноса, поверх гор */
+        /* Название кафе — без переноса строки, поверх гор */
         .cafe-name {
             font-family: 'Georgia', 'Times New Roman', serif;
             font-size: 1.9rem;
@@ -87,7 +91,6 @@
             border-radius: 60px;
         }
 
-        /* для узких экранов шрифт уменьшаем, но сохраняем целостность слова */
         @media (max-width: 400px) {
             .cafe-name {
                 font-size: 1.5rem;
@@ -108,7 +111,7 @@
             text-shadow: 0 1px 2px black;
         }
 
-        /* Панель заказа */
+        /* ---------- ПАНЕЛЬ ЗАКАЗА ---------- */
         .order-panel {
             background: #2d1f18;
             margin: 1rem 1rem 0 1rem;
@@ -157,6 +160,7 @@
             transform: scale(0.96);
         }
 
+        /* ---------- ОСНОВНОЕ МЕНЮ ---------- */
         .menu-inner {
             padding: 1rem 1rem 2rem 1rem;
         }
@@ -318,9 +322,49 @@
     </style>
 </head>
 <body>
+
+<!-- ========== ЭКРАН-ЗАГЛУШКА (preloader) ========== -->
+<!-- Он перекрывает всё содержимое, пока страница не загрузится полностью.
+     Благодаря этому ни <!DOCTYPE html>, ни сырой HTML-код не успевают промелькнуть. -->
+<div id="splashScreen" style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #2a1f17;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    transition: opacity 0.4s ease-out;
+">
+    <div style="text-align: center;">
+        <div style="
+            font-family: 'Georgia', serif;
+            font-size: 2.2rem;
+            color: #e7bc8e;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            margin-bottom: 0.5rem;
+        ">ГРАВИТАЦИЯ</div>
+        <div style="
+            font-size: 0.8rem;
+            color: #c99f72;
+            letter-spacing: 1px;
+        ">загружаем меню...</div>
+        <div style="margin-top: 1rem;">
+            <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="20" cy="20" r="15" fill="none" stroke="#c2824b" stroke-width="2" stroke-dasharray="80" stroke-linecap="round">
+                    <animate attributeName="stroke-dashoffset" dur="1.2s" repeatCount="indefinite" values="80;0" />
+                </circle>
+            </svg>
+        </div>
+    </div>
+</div>
+
 <div class="menu-container">
     <div class="cafe-header">
-        <!-- Графический силуэт гор (векторный, органично вписывается) -->
+        <!-- Силуэт гор (графика) -->
         <div class="mountains-bg">
             <svg viewBox="0 0 1200 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M0,160 L80,100 L160,130 L250,70 L340,110 L430,60 L520,95 L610,40 L700,85 L790,50 L880,90 L970,45 L1060,80 L1150,55 L1200,70 L1200,200 L0,200 Z" fill="#4a3122" opacity="0.7"/>
@@ -349,9 +393,8 @@
 </div>
 
 <script>
-    // ---------- МЕНЮ (удалена позиция "Хычины (сыр, картошка)" из раздела САЛАТЫ, полное соответствие оригинальному PDF) ----------
+    // ---------- МЕНЮ (полное соответствие PDF, удалена лишняя позиция хычины в салатах) ----------
     const menuData = [
-        // ЗАВТРАКИ / СУПЫ / ГОРЯЧЕЕ
         { category: "ЗАВТРАКИ · СУПЫ · ГОРЯЧИЕ БЛЮДА", name: "Шорпа", price: 400 },
         { category: "ЗАВТРАКИ · СУПЫ · ГОРЯЧИЕ БЛЮДА", name: "Латман", price: 400 },
         { category: "ЗАВТРАКИ · СУПЫ · ГОРЯЧИЕ БЛЮДА", name: "Манты", price: 400 },
@@ -362,23 +405,19 @@
         { category: "ЗАВТРАКИ · СУПЫ · ГОРЯЧИЕ БЛЮДА", name: "Сырники", price: 250 },
         { category: "ЗАВТРАКИ · СУПЫ · ГОРЯЧИЕ БЛЮДА", name: "Каши (в ассортименте)", price: 100 },
         
-        // ХЫЧИНЫ
         { category: "ХЫЧИНЫ БАЛКАРСКИЕ", name: "Хычины с мясом", price: 250 },
         { category: "ХЫЧИНЫ БАЛКАРСКИЕ", name: "Хычины (сыр, зелень)", price: 180 },
         { category: "ХЫЧИНЫ БАЛКАРСКИЕ", name: "Хычины (сыр, картошка)", price: 180 },
         
-        // САЛАТЫ (без лишнего хычина)
         { category: "САЛАТЫ И НАРЕЗКИ", name: "Овощи (нарезка)", price: 450 },
         { category: "САЛАТЫ И НАРЕЗКИ", name: "Салат овощной", price: 200 },
         { category: "САЛАТЫ И НАРЕЗКИ", name: "Морковный салат", price: 120 },
         { category: "САЛАТЫ И НАРЕЗКИ", name: "Свекольный салат", price: 150 },
         { category: "САЛАТЫ И НАРЕЗКИ", name: "Греческий салат", price: 350 },
         
-        // ЧЕБУРЕКИ
         { category: "ЧЕБУРЕКИ", name: "Чебуреки с сыром", price: 200 },
         { category: "ЧЕБУРЕКИ", name: "Чебуреки с мясом", price: 230 },
         
-        // ШАШЛЫК / МАНГАЛ
         { category: "ШАШЛЫК · БЛЮДА НА МАНГАЛЕ", name: "Баранина мякоть", price: 1000 },
         { category: "ШАШЛЫК · БЛЮДА НА МАНГАЛЕ", name: "Баранина спинка", price: 900 },
         { category: "ШАШЛЫК · БЛЮДА НА МАНГАЛЕ", name: "Тепятина мякоть", price: 1000 },
@@ -390,7 +429,6 @@
         { category: "ШАШЛЫК · БЛЮДА НА МАНГАЛЕ", name: "Карп", price: 750 },
         { category: "ШАШЛЫК · БЛЮДА НА МАНГАЛЕ", name: "Грибы на мангале", price: 350 },
         
-        // НАПИТКИ
         { category: "НАПИТКИ", name: "Чай облепиховый 500мл", price: 250 },
         { category: "НАПИТКИ", name: "Чай травяной 500мл", price: 200 },
         { category: "НАПИТКИ", name: "Чай черный", price: 30 },
@@ -400,14 +438,12 @@
         { category: "НАПИТКИ", name: "Айран", price: 50 }
     ];
 
-    // состояние количества порций
     let quantities = new Map();
 
     function getItemKey(category, name) {
         return `${category}::${name}`;
     }
 
-    // обновить итоговую сумму и перерисовать цифры у блюд
     function updateTotalAndRender() {
         let total = 0;
         for (let item of menuData) {
@@ -418,7 +454,6 @@
         const totalDisplay = document.getElementById("totalSumDisplay");
         if (totalDisplay) totalDisplay.innerText = `${total} ₽`;
 
-        // обновляем каждый блок количества и суммы в DOM
         for (let item of menuData) {
             const key = getItemKey(item.category, item.name);
             const qty = quantities.get(key) || 0;
@@ -494,7 +529,6 @@
         }
         menuRoot.innerHTML = html;
 
-        // обработчики для кнопок + / -
         document.querySelectorAll('.qty-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -517,10 +551,22 @@
         });
     }
 
+    // Запускаем отрисовку меню
     renderFullMenu();
     const resetBtn = document.getElementById("resetOrderBtn");
     if (resetBtn) resetBtn.addEventListener("click", resetOrder);
     updateTotalAndRender();
+
+    // Убираем экран-заглушку после полной загрузки страницы (включая шрифты и картинки)
+    window.addEventListener('load', function() {
+        const splash = document.getElementById('splashScreen');
+        if (splash) {
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.style.display = 'none';
+            }, 500);
+        }
+    });
 </script>
 </body>
 </html>
