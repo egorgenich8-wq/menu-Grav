@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Меню | ГРАВИТАЦИЯ | Капучино стиль</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            /* глубокий кофейно-шоколадный фон — аппетитный и строгий */
+            background: #2a1f17;
+            font-family: 'Inter', 'Segoe UI', 'Roboto', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+            padding: 2rem 1.5rem;
+            color: #f0e3d4;
+        }
+
+        /* главный контейнер — тёмный капучино с благородной текстурой */
+        .menu-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            background: #35281e;
+            border-radius: 32px;
+            box-shadow: 0 30px 50px -15px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+            border: 1px solid #5c4332;
+        }
+
+        /* шапка кафе */
+        .cafe-header {
+            text-align: center;
+            padding: 2rem 1.5rem 1rem 1.5rem;
+            border-bottom: 1px solid #5a3f2e;
+            background: linear-gradient(135deg, #2f221b 0%, #3a2a1f 100%);
+        }
+
+        .cafe-name {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #e7bc8e;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            margin-bottom: 0.5rem;
+        }
+
+        .cafe-slogan {
+            font-size: 0.9rem;
+            color: #c99f72;
+            letter-spacing: 1px;
+            font-weight: 400;
+            border-top: 1px dashed #73543b;
+            display: inline-block;
+            padding-top: 0.5rem;
+        }
+
+        .menu-inner {
+            padding: 2rem 2rem 2.5rem;
+        }
+
+        /* категории — с центрированными заголовками */
+        .category {
+            margin-bottom: 2.8rem;
+        }
+
+        .category-title {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: 1.7rem;
+            font-weight: 600;
+            color: #e7bc8e;
+            text-align: center;
+            margin-bottom: 1.6rem;
+            letter-spacing: -0.2px;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+            border-bottom: 1px solid #5a3f2e;
+            padding-bottom: 0.6rem;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* сетка блюд */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 12px 20px;
+        }
+
+        /* карточка блюда — тёмная, но с глубоким кофейным свечением */
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            background: #2f221b;
+            padding: 14px 18px;
+            border-radius: 20px;
+            border: 1px solid #5a3f2e;
+            transition: all 0.25s ease;
+            cursor: default;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .menu-item:hover {
+            background: #3d2c22;
+            border-color: #c2824b;
+            transform: translateX(5px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
+        }
+
+        .item-name {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #f7e9dc;
+            letter-spacing: -0.2px;
+            word-break: break-word;
+        }
+
+        .item-price {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #f3c693;
+            background: #412f23;
+            padding: 4px 14px;
+            border-radius: 60px;
+            white-space: nowrap;
+            margin-left: 16px;
+            font-family: 'JetBrains Mono', monospace, 'Courier New';
+            border: 1px solid #73543b;
+        }
+
+        /* блок напитков — более плотный, насыщенный тон */
+        .drinks-wrap {
+            background: #2d1f18;
+            border-radius: 24px;
+            padding: 0.8rem 0.5rem 0.5rem 0.8rem;
+            border: 1px solid #654930;
+        }
+
+        /* футер — деликатный, кофейный */
+        .footer-thin {
+            margin-top: 2.2rem;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #be946e;
+            border-top: 1px solid #4f3828;
+            padding-top: 1.5rem;
+            letter-spacing: 0.3px;
+        }
+
+        @media (max-width: 650px) {
+            body {
+                padding: 1rem;
+            }
+            .menu-inner {
+                padding: 1.3rem;
+            }
+            .cafe-name {
+                font-size: 2rem;
+            }
+            .category-title {
+                font-size: 1.4rem;
+            }
+            .menu-item {
+                padding: 10px 14px;
+            }
+            .item-name {
+                font-size: 0.92rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="menu-container">
+    <!-- Шапка с названием кафе и слоганом -->
+    <div class="cafe-header">
+        <div class="cafe-name">ГРАВИТАЦИЯ</div>
+        <div class="cafe-slogan">притягиваем вкусом</div>
+    </div>
+
+    <div class="menu-inner">
+
+        <!-- ЗАВТРАКИ / СУПЫ / ГОРЯЧИЕ БЛЮДА -->
+        <div class="category">
+            <div class="category-title">ЗАВТРАКИ · СУПЫ · ГОРЯЧИЕ БЛЮДА</div>
+            <div class="items-grid">
+                <div class="menu-item"><div class="item-name">Шорпа</div><div class="item-price">400₽</div></div>
+                <div class="menu-item"><div class="item-name">Латман</div><div class="item-price">400₽</div></div>
+                <div class="menu-item"><div class="item-name">Манты</div><div class="item-price">400₽</div></div>
+                <div class="menu-item"><div class="item-name">Омлет</div><div class="item-price">250₽</div></div>
+                <div class="menu-item"><div class="item-name">Шакшука</div><div class="item-price">250₽</div></div>
+                <div class="menu-item"><div class="item-name">Яичница</div><div class="item-price">150₽</div></div>
+                <div class="menu-item"><div class="item-name">Блины 3 шт с ягодами</div><div class="item-price">230₽</div></div>
+                <div class="menu-item"><div class="item-name">Сырники</div><div class="item-price">250₽</div></div>
+                <div class="menu-item"><div class="item-name">Каши (в ассортименте)</div><div class="item-price">100₽</div></div>
+            </div>
+        </div>
+
+        <!-- ХЫЧИНЫ БАЛКАРСКИЕ / ВЫПЕЧКА -->
+        <div class="category">
+            <div class="category-title">ХЫЧИНЫ БАЛКАРСКИЕ</div>
+            <div class="items-grid">
+                <div class="menu-item"><div class="item-name">Хычины с мясом</div><div class="item-price">250₽</div></div>
+                <div class="menu-item"><div class="item-name">Хычины (сыр, зелень)</div><div class="item-price">180₽</div></div>
+                <div class="menu-item"><div class="item-name">Хычины (сыр, картошка)</div><div class="item-price">180₽</div></div>
+            </div>
+        </div>
+
+        <!-- САЛАТЫ (точная структура из PDF + дубль хычин) -->
+        <div class="category">
+            <div class="category-title">САЛАТЫ И НАРЕЗКИ</div>
+            <div class="items-grid">
+                <div class="menu-item"><div class="item-name">Хычины (сыр, картошка)</div><div class="item-price">180₽</div></div>
+                <div class="menu-item"><div class="item-name">Овощи (нарезка)</div><div class="item-price">450₽</div></div>
+                <div class="menu-item"><div class="item-name">Салат овощной</div><div class="item-price">200₽</div></div>
+                <div class="menu-item"><div class="item-name">Морковный салат</div><div class="item-price">120₽</div></div>
+                <div class="menu-item"><div class="item-name">Свекольный салат</div><div class="item-price">150₽</div></div>
+                <div class="menu-item"><div class="item-name">Греческий салат</div><div class="item-price">350₽</div></div>
+            </div>
+        </div>
+
+        <!-- ЧЕБУРЕКИ -->
+        <div class="category">
+            <div class="category-title">ЧЕБУРЕКИ</div>
+            <div class="items-grid">
+                <div class="menu-item"><div class="item-name">Чебуреки с сыром</div><div class="item-price">200₽</div></div>
+                <div class="menu-item"><div class="item-name">Чебуреки с мясом</div><div class="item-price">230₽</div></div>
+            </div>
+        </div>
+
+        <!-- ШАШЛЫК / БЛЮДА НА МАНГАЛЕ -->
+        <div class="category">
+            <div class="category-title">ШАШЛЫК · БЛЮДА НА МАНГАЛЕ</div>
+            <div class="items-grid">
+                <div class="menu-item"><div class="item-name">Баранина мякоть</div><div class="item-price">1000₽</div></div>
+                <div class="menu-item"><div class="item-name">Баранина спинка</div><div class="item-price">900₽</div></div>
+                <div class="menu-item"><div class="item-name">Тепятина мякоть</div><div class="item-price">1000₽</div></div>
+                <div class="menu-item"><div class="item-name">Куриный шашлык</div><div class="item-price">700₽</div></div>
+                <div class="menu-item"><div class="item-name">Жау-баур</div><div class="item-price">400₽</div></div>
+                <div class="menu-item"><div class="item-name">Форель порц</div><div class="item-price">800₽</div></div>
+                <div class="menu-item"><div class="item-name">Люля</div><div class="item-price">300₽</div></div>
+                <div class="menu-item"><div class="item-name">Овощи на мангале</div><div class="item-price">450₽</div></div>
+                <div class="menu-item"><div class="item-name">Карп</div><div class="item-price">750₽</div></div>
+                <div class="menu-item"><div class="item-name">Грибы на мангале</div><div class="item-price">350₽</div></div>
+            </div>
+        </div>
+
+        <!-- НАПИТКИ -->
+        <div class="category">
+            <div class="category-title">НАПИТКИ</div>
+            <div class="drinks-wrap">
+                <div class="items-grid">
+                    <div class="menu-item"><div class="item-name">Чай облепиховый 500мл</div><div class="item-price">250₽</div></div>
+                    <div class="menu-item"><div class="item-name">Чай травяной 500мл</div><div class="item-price">200₽</div></div>
+                    <div class="menu-item"><div class="item-name">Чай черный</div><div class="item-price">30₽</div></div>
+                    <div class="menu-item"><div class="item-name">Чай зеленый</div><div class="item-price">30₽</div></div>
+                    <div class="menu-item"><div class="item-name">Кофе</div><div class="item-price">80₽</div></div>
+                    <div class="menu-item"><div class="item-name">Лимонад</div><div class="item-price">80₽</div></div>
+                    <div class="menu-item"><div class="item-name">Айран</div><div class="item-price">50₽</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-thin">
+            ⋆  с. Эльтюбю  ⋆
+        </div>
+    </div>
+</div>
+</body>
+</html>
