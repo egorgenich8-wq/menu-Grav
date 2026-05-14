@@ -31,7 +31,7 @@
             min-height: 100vh;
         }
 
-        /* Контейнер меню — без лишних отступов */
+        /* Контейнер меню */
         .menu-container {
             max-width: 100%;
             width: 100%;
@@ -54,7 +54,6 @@
             padding: 1.2rem 1rem 0.8rem 1rem;
         }
 
-        /* SVG силуэт гор — фоновая графика */
         .mountains-bg {
             position: absolute;
             bottom: 0;
@@ -77,7 +76,6 @@
             z-index: 2;
         }
 
-        /* Название кафе — без переноса строки, поверх гор */
         .cafe-name {
             font-family: 'Georgia', 'Times New Roman', serif;
             font-size: 1.9rem;
@@ -169,14 +167,13 @@
 
         /* ---------- ОСНОВНОЕ МЕНЮ ---------- */
         .menu-inner {
-            padding: 1rem 1rem 2rem 1rem;
+            padding: 1rem 1rem 1rem 1rem;
         }
 
         .category {
             margin-bottom: 2rem;
         }
 
-        /* Градиентные заголовки категорий */
         .category-title {
             font-family: 'Georgia', 'Times New Roman', serif;
             font-size: 1.4rem;
@@ -201,7 +198,6 @@
             gap: 12px;
         }
 
-        /* СТЕКЛЯННЫЕ карточки блюд + анимация появления */
         .menu-item {
             display: flex;
             justify-content: space-between;
@@ -218,18 +214,6 @@
             gap: 10px;
             animation: fadeSlideUp 0.35s ease backwards;
         }
-
-        /* Каждая карточка получает задержку через JS (динамически) */
-        .menu-item:nth-child(1) { animation-delay: 0.02s; }
-        .menu-item:nth-child(2) { animation-delay: 0.05s; }
-        .menu-item:nth-child(3) { animation-delay: 0.08s; }
-        .menu-item:nth-child(4) { animation-delay: 0.11s; }
-        .menu-item:nth-child(5) { animation-delay: 0.14s; }
-        .menu-item:nth-child(6) { animation-delay: 0.17s; }
-        .menu-item:nth-child(7) { animation-delay: 0.20s; }
-        .menu-item:nth-child(8) { animation-delay: 0.23s; }
-        .menu-item:nth-child(9) { animation-delay: 0.26s; }
-        .menu-item:nth-child(10) { animation-delay: 0.29s; }
 
         @keyframes fadeSlideUp {
             from {
@@ -275,7 +259,6 @@
             font-family: monospace;
         }
 
-        /* Анимированные кнопки управления количеством */
         .item-controls {
             display: flex;
             align-items: center;
@@ -337,8 +320,45 @@
             border: 1px solid #654930;
         }
 
+        /* БЛОК ОТПРАВКИ ЗАКАЗА — новая кнопка */
+        .order-actions {
+            margin: 0.5rem 1rem 1.5rem 1rem;
+            display: flex;
+            justify-content: center;
+        }
+        .send-order-btn {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            border: none;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 0.9rem 1.8rem;
+            border-radius: 60px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            font-family: inherit;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(2px);
+            width: 100%;
+            justify-content: center;
+        }
+        .send-order-btn:active {
+            transform: scale(0.97);
+            background: linear-gradient(135deg, #128C7E, #075E54);
+        }
+        .send-order-btn.disabled {
+            opacity: 0.5;
+            transform: none;
+            pointer-events: none;
+            filter: grayscale(0.1);
+        }
+
         .footer-thin {
-            margin-top: 1.5rem;
+            margin-top: 1rem;
             text-align: center;
             font-size: 0.65rem;
             color: #be946e;
@@ -365,6 +385,10 @@
             .category-title {
                 font-size: 1.25rem;
             }
+            .send-order-btn {
+                font-size: 0.9rem;
+                padding: 0.7rem 1.2rem;
+            }
         }
 
         ::-webkit-scrollbar {
@@ -375,7 +399,7 @@
 </head>
 <body>
 
-<!-- ========== ЭКРАН-ЗАГЛУШКА (preloader) ========== -->
+<!-- ЭКРАН-ЗАГЛУШКА (preloader) -->
 <div id="splashScreen" style="
     position: fixed;
     top: 0;
@@ -424,11 +448,19 @@
     </div>
 
     <div class="menu-inner" id="menuRoot"></div>
-    <div class="footer-thin">⋆ нажмите + / − чтобы выбрать порции ⋆</div>
+
+    <!-- БЛОК ОТПРАВКИ В WHATSAPP (MAX) -->
+    <div class="order-actions">
+        <button class="send-order-btn" id="sendOrderBtn">
+            <span>📱</span> Отправить заказ в MAX
+        </button>
+    </div>
+
+    <div class="footer-thin">⋆ нажмите + / − чтобы выбрать порции, отправьте заказ в мессенджер ⋆</div>
 </div>
 
 <script>
-    // ---------- МЕНЮ (полное соответствие PDF, удалена лишняя позиция хычины в салатах) ----------
+    // ---------- МЕНЮ (полное соответствие PDF) ----------
     const menuData = [
         { category: "ЗАВТРАКИ · СУПЫ · ГОРЯЧИЕ БЛЮДА", name: "Шорпа", price: 400 },
         { category: "ЗАВТРАКИ · СУПЫ · ГОРЯЧИЕ БЛЮДА", name: "Латман", price: 400 },
@@ -519,6 +551,45 @@
         updateTotalAndRender();
     }
 
+    // Функция формирования текста заказа для отправки в WhatsApp (MAX)
+    function getOrderText() {
+        let orderLines = [];
+        let totalSum = 0;
+        for (let item of menuData) {
+            const key = getItemKey(item.category, item.name);
+            const qty = quantities.get(key) || 0;
+            if (qty > 0) {
+                const sum = qty * item.price;
+                totalSum += sum;
+                orderLines.push(`🍽️ ${item.name} — ${qty} шт × ${item.price}₽ = ${sum}₽`);
+            }
+        }
+        if (orderLines.length === 0) {
+            return null;
+        }
+        const header = `🍷 *НОВЫЙ ЗАКАЗ (ГРАВИТАЦИЯ)* 🍷\n\n`;
+        const itemsText = orderLines.join('\n');
+        const footer = `\n\n────────────────\n💰 *ИТОГО: ${totalSum} ₽*\n\n📞 Заказ сформирован через меню. Жду подтверждения!`;
+        return header + itemsText + footer;
+    }
+
+    // Отправка через WhatsApp (приложение MAX / WhatsApp)
+    function sendOrderToWhatsApp() {
+        const orderMessage = getOrderText();
+        if (!orderMessage) {
+            alert("❌ Ваша корзина пуста. Добавьте хотя бы одно блюдо перед отправкой.");
+            return;
+        }
+        // Номер телефона получателя (без +, но можно с +)
+        const phoneNumber = "79969170084";
+        // Кодируем текст для URL
+        const encodedMessage = encodeURIComponent(orderMessage);
+        // Формируем ссылку WhatsApp (работает на мобильных и десктопе)
+        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+        // Открываем в новой вкладке / переход на приложение MAX (WhatsApp)
+        window.open(whatsappUrl, '_blank');
+    }
+
     function renderFullMenu() {
         const menuRoot = document.getElementById("menuRoot");
         if (!menuRoot) return;
@@ -592,6 +663,12 @@
     const resetBtn = document.getElementById("resetOrderBtn");
     if (resetBtn) resetBtn.addEventListener("click", resetOrder);
     updateTotalAndRender();
+
+    // Кнопка отправки заказа в WhatsApp (приложение MAX)
+    const sendBtn = document.getElementById("sendOrderBtn");
+    if (sendBtn) {
+        sendBtn.addEventListener("click", sendOrderToWhatsApp);
+    }
 
     window.addEventListener('load', function() {
         const splash = document.getElementById('splashScreen');
