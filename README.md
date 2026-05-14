@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>ГРАВИТАЦИЯ кафе | Меню с выбором порций</title>
+    <title>ГРАВИТАЦИЯ · Горное меню</title>
+    <!-- Скрываем системные интерфейсы на мобильных, убираем служебные надписи -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#2a1f17">
     <style>
         * {
             margin: 0;
@@ -14,9 +19,11 @@
         body {
             background: #2a1f17;
             font-family: 'Inter', 'Segoe UI', 'Roboto', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
-            padding: 1rem;
+            padding: 0;
+            margin: 0;
             color: #f0e3d4;
             overflow-x: hidden;
+            min-height: 100vh;
         }
 
         .menu-container {
@@ -24,68 +31,112 @@
             width: 100%;
             margin: 0 auto;
             background: #35281e;
-            border-radius: 28px;
-            box-shadow: 0 30px 50px -15px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            overflow: hidden;
-            border: 1px solid #5c4332;
+            border-radius: 0;
+            box-shadow: none;
+            overflow-x: hidden;
+            border: none;
+            min-height: 100vh;
         }
 
+        /* Шапка с графическим силуэтом гор */
         .cafe-header {
+            position: relative;
             text-align: center;
-            padding: 1.5rem 1rem 1rem 1rem;
+            background: linear-gradient(145deg, #2f221b 0%, #3a2a1f 100%);
             border-bottom: 1px solid #5a3f2e;
-            background: linear-gradient(135deg, #2f221b 0%, #3a2a1f 100%);
+            overflow: hidden;
+            padding: 1.2rem 1rem 0.8rem 1rem;
         }
 
+        /* SVG силуэт гор — фоновая графика поверх которой идёт название */
+        .mountains-bg {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.45;
+            pointer-events: none;
+        }
+
+        .mountains-bg svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Название ГРАВИТАЦИЯ — без переноса, поверх гор */
         .cafe-name {
             font-family: 'Georgia', 'Times New Roman', serif;
-            font-size: 2.2rem;
+            font-size: 1.9rem;
             font-weight: 700;
             letter-spacing: 1px;
-            color: #e7bc8e;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            margin-bottom: 0.3rem;
+            color: #f2e2cf;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0,0,0,0.8);
+            white-space: nowrap;
+            display: inline-block;
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(2px);
+            padding: 0.2rem 1.2rem;
+            border-radius: 60px;
+        }
+
+        /* для узких экранов шрифт уменьшаем, но сохраняем целостность слова */
+        @media (max-width: 400px) {
+            .cafe-name {
+                font-size: 1.5rem;
+                letter-spacing: 0.3px;
+                padding: 0.1rem 0.9rem;
+            }
         }
 
         .cafe-slogan {
-            font-size: 0.8rem;
-            color: #c99f72;
-            letter-spacing: 0.5px;
-            font-weight: 400;
-            border-top: 1px dashed #73543b;
+            font-size: 0.75rem;
+            color: #f3ddc2;
+            letter-spacing: 0.4px;
+            font-weight: 500;
+            border-top: 1px dashed #dbb07c;
             display: inline-block;
             padding-top: 0.4rem;
+            margin-top: 0.4rem;
+            text-shadow: 0 1px 2px black;
         }
 
+        /* Панель заказа */
         .order-panel {
             background: #2d1f18;
             margin: 1rem 1rem 0 1rem;
-            padding: 0.8rem 1rem;
+            padding: 0.7rem 1rem;
             border-radius: 24px;
             border: 1px solid #6a4d36;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 0.8rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            gap: 0.6rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
 
         .total-label {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 500;
             color: #dbb486;
-            letter-spacing: 0.3px;
         }
 
         .total-amount {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 800;
             color: #f3c693;
             background: #412f23;
-            padding: 0.2rem 1rem;
+            padding: 0.1rem 0.9rem;
             border-radius: 50px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: monospace;
             border: 1px solid #c2824b;
         }
 
@@ -93,42 +144,39 @@
             background: #4f3628;
             border: none;
             color: #f0cfaa;
-            padding: 0.4rem 1rem;
+            padding: 0.35rem 1rem;
             border-radius: 40px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-family: inherit;
             border: 1px solid #7e5b40;
         }
 
         .reset-btn:active {
             transform: scale(0.96);
-            background: #684b36;
         }
 
         .menu-inner {
-            padding: 1.2rem 1rem 2rem 1rem;
+            padding: 1rem 1rem 2rem 1rem;
         }
 
         .category {
-            margin-bottom: 2rem;
+            margin-bottom: 1.8rem;
         }
 
         .category-title {
             font-family: 'Georgia', 'Times New Roman', serif;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 600;
             color: #e7bc8e;
             text-align: center;
-            margin-bottom: 1.2rem;
+            margin-bottom: 1rem;
             border-bottom: 1px solid #5a3f2e;
-            padding-bottom: 0.4rem;
+            padding-bottom: 0.35rem;
             width: fit-content;
             margin-left: auto;
             margin-right: auto;
-            letter-spacing: -0.2px;
         }
 
         .items-grid {
@@ -142,19 +190,18 @@
             justify-content: space-between;
             align-items: center;
             background: #2f221b;
-            padding: 12px 14px;
+            padding: 10px 14px;
             border-radius: 20px;
             border: 1px solid #5a3f2e;
-            transition: all 0.2s ease;
+            transition: all 0.1s ease;
             cursor: pointer;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
 
         .menu-item:active {
             background: #3d2c22;
-            transform: scale(0.99);
         }
 
         .item-info {
@@ -164,7 +211,7 @@
 
         .item-name {
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 0.93rem;
             color: #f7e9dc;
             letter-spacing: -0.2px;
             word-break: break-word;
@@ -172,13 +219,13 @@
 
         .item-price {
             font-weight: 700;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #f3c693;
             background: #412f23;
-            padding: 2px 10px;
+            padding: 2px 9px;
             border-radius: 30px;
             display: inline-block;
-            margin-top: 5px;
+            margin-top: 4px;
             font-family: monospace;
         }
 
@@ -187,7 +234,7 @@
             align-items: center;
             gap: 8px;
             background: #241a14;
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 50px;
             border: 1px solid #6f4e38;
         }
@@ -196,17 +243,15 @@
             background: #5a3f2e;
             border: none;
             color: #f7e5d2;
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             border-radius: 40px;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.05s linear;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            -webkit-tap-highlight-color: transparent;
         }
 
         .qty-btn:active {
@@ -216,54 +261,43 @@
 
         .qty-num {
             font-weight: 700;
-            min-width: 28px;
+            min-width: 26px;
             text-align: center;
             color: #f3cfaa;
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
 
         .item-total {
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             background: #32221a;
-            padding: 4px 10px;
+            padding: 3px 9px;
             border-radius: 30px;
             color: #e7bc8e;
-            min-width: 70px;
+            min-width: 65px;
             text-align: center;
         }
 
         .drinks-wrap {
             background: #2d1f18;
-            border-radius: 20px;
-            padding: 0.2rem 0.1rem 0.1rem 0.1rem;
+            border-radius: 18px;
+            padding: 0.1rem;
             border: 1px solid #654930;
         }
 
         .footer-thin {
-            margin-top: 1.5rem;
+            margin-top: 1rem;
             text-align: center;
-            font-size: 0.65rem;
-            color: #be946e;
+            font-size: 0.6rem;
+            color: #a77e58;
             border-top: 1px solid #4f3828;
-            padding-top: 1rem;
+            padding-top: 0.8rem;
+            opacity: 0.8;
         }
 
         @media (max-width: 480px) {
-            body {
-                padding: 0.6rem;
-            }
-            .cafe-name {
-                font-size: 1.8rem;
-            }
-            .category-title {
-                font-size: 1.2rem;
-            }
-            .menu-item {
-                padding: 10px 12px;
-            }
-            .item-name {
-                font-size: 0.9rem;
+            .menu-inner {
+                padding: 0.8rem 0.8rem 1.5rem;
             }
             .total-amount {
                 font-size: 1.3rem;
@@ -271,16 +305,33 @@
             .qty-btn {
                 width: 28px;
                 height: 28px;
-                font-size: 1.2rem;
+                font-size: 1.1rem;
             }
+            .item-name {
+                font-size: 0.88rem;
+            }
+        }
+        ::-webkit-scrollbar {
+            width: 0;
+            background: transparent;
         }
     </style>
 </head>
 <body>
 <div class="menu-container">
     <div class="cafe-header">
-        <div class="cafe-name">ГРАВИТАЦИЯ</div>
-        <div class="cafe-slogan">притягиваем вкусом</div>
+        <!-- Графический силуэт гор (векторный, органично вписывается) -->
+        <div class="mountains-bg">
+            <svg viewBox="0 0 1200 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0,160 L80,100 L160,130 L250,70 L340,110 L430,60 L520,95 L610,40 L700,85 L790,50 L880,90 L970,45 L1060,80 L1150,55 L1200,70 L1200,200 L0,200 Z" fill="#4a3122" opacity="0.7"/>
+                <path d="M0,180 L100,120 L200,145 L310,90 L420,125 L520,75 L630,110 L740,65 L850,100 L950,70 L1050,95 L1150,65 L1200,80 L1200,200 L0,200 Z" fill="#603f2a" opacity="0.6"/>
+                <path d="M0,195 L60,155 L150,170 L220,135 L320,155 L400,130 L500,148 L600,115 L720,140 L820,110 L920,135 L1020,105 L1120,128 L1200,110 L1200,200 L0,200 Z" fill="#7c5a3e" opacity="0.5"/>
+            </svg>
+        </div>
+        <div class="header-content">
+            <div class="cafe-name">ГРАВИТАЦИЯ</div>
+            <div class="cafe-slogan">притягиваем вкусом</div>
+        </div>
     </div>
 
     <div class="order-panel">
@@ -290,7 +341,7 @@
     </div>
 
     <div class="menu-inner" id="menuRoot">
-        <!-- меню генерируется js -->
+        <!-- сюда динамически подгрузится меню -->
     </div>
     <div class="footer-thin">
         ⋆ нажмите + / − чтобы выбрать порции ⋆
@@ -298,7 +349,7 @@
 </div>
 
 <script>
-    // ---------- МЕНЮ (удалена лишняя позиция "Хычины (сыр, картошка)" из раздела САЛАТЫ) ----------
+    // ---------- МЕНЮ (удалена позиция "Хычины (сыр, картошка)" из раздела САЛАТЫ, полное соответствие оригинальному PDF) ----------
     const menuData = [
         // ЗАВТРАКИ / СУПЫ / ГОРЯЧЕЕ
         { category: "ЗАВТРАКИ · СУПЫ · ГОРЯЧИЕ БЛЮДА", name: "Шорпа", price: 400 },
@@ -316,7 +367,7 @@
         { category: "ХЫЧИНЫ БАЛКАРСКИЕ", name: "Хычины (сыр, зелень)", price: 180 },
         { category: "ХЫЧИНЫ БАЛКАРСКИЕ", name: "Хычины (сыр, картошка)", price: 180 },
         
-        // САЛАТЫ (убрана дублирующая позиция "Хычины (сыр, картошка)" — только овощные салаты и нарезки)
+        // САЛАТЫ (без лишнего хычина)
         { category: "САЛАТЫ И НАРЕЗКИ", name: "Овощи (нарезка)", price: 450 },
         { category: "САЛАТЫ И НАРЕЗКИ", name: "Салат овощной", price: 200 },
         { category: "САЛАТЫ И НАРЕЗКИ", name: "Морковный салат", price: 120 },
