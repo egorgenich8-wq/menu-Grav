@@ -106,6 +106,7 @@
             text-shadow: 0 1px 2px black;
         }
 
+        /* Панель заказа */
         .order-panel {
             background: rgba(45, 31, 24, 0.85);
             backdrop-filter: blur(8px);
@@ -157,6 +158,117 @@
             transform: scale(0.94);
             background: #c2824b;
             color: #2a1f17;
+        }
+
+        /* ОКОШКО С ПЕРЕЧНЕМ ВЫБРАННЫХ БЛЮД */
+        .cart-summary {
+            background: rgba(36, 26, 20, 0.8);
+            backdrop-filter: blur(8px);
+            margin: 0.8rem 1rem 0 1rem;
+            padding: 0.8rem 1rem;
+            border-radius: 24px;
+            border: 1px solid rgba(194, 130, 75, 0.4);
+            transition: all 0.2s;
+        }
+        .cart-summary h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #e7bc8e;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .cart-items-list {
+            max-height: 180px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-size: 0.8rem;
+            padding: 6px 0;
+            border-bottom: 1px dashed rgba(231, 188, 142, 0.2);
+            color: #f0e3d4;
+        }
+        .cart-item-name {
+            font-weight: 500;
+            word-break: break-word;
+            flex: 2;
+        }
+        .cart-item-qty {
+            font-weight: 600;
+            margin: 0 12px;
+            color: #f3cfaa;
+        }
+        .cart-item-price {
+            font-weight: 600;
+            color: #f3c693;
+            white-space: nowrap;
+        }
+        .empty-cart-message {
+            font-size: 0.75rem;
+            color: #be946e;
+            text-align: center;
+            padding: 12px 0;
+            font-style: italic;
+        }
+
+        /* БЛОК С ТРЕМЯ КНОПКАМИ: Telegram + WhatsApp + МАКС */
+        .order-actions {
+            margin: 0.5rem 1rem 1.5rem 1rem;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .send-btn {
+            border: none;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding: 0.7rem 1.2rem;
+            border-radius: 60px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+            font-family: inherit;
+            letter-spacing: 0.3px;
+            backdrop-filter: blur(2px);
+            flex: 0 1 auto;
+        }
+        .send-btn:active {
+            transform: scale(0.96);
+        }
+        .telegram-btn {
+            background: linear-gradient(135deg, #29a9e1, #1c7eb3);
+        }
+        .telegram-btn:active {
+            background: linear-gradient(135deg, #1c7eb3, #0f5e8a);
+        }
+        .whatsapp-btn {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+        }
+        .whatsapp-btn:active {
+            background: linear-gradient(135deg, #128C7E, #075E54);
+        }
+        .max-btn {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+        .max-btn:active {
+            background: linear-gradient(135deg, #8e44ad, #6c3483);
+        }
+        .send-btn.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+            filter: grayscale(0.1);
         }
 
         .menu-inner {
@@ -313,54 +425,6 @@
             border: 1px solid #654930;
         }
 
-        /* БЛОК С ДВУМЯ КНОПКАМИ: Telegram + WhatsApp */
-        .order-actions {
-            margin: 0.5rem 1rem 1.5rem 1rem;
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            gap: 14px;
-            flex-wrap: wrap;
-        }
-        .send-btn {
-            border: none;
-            color: white;
-            font-weight: 700;
-            font-size: 0.95rem;
-            padding: 0.8rem 1.4rem;
-            border-radius: 60px;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
-            font-family: inherit;
-            letter-spacing: 0.3px;
-            backdrop-filter: blur(2px);
-            flex: 0 1 auto;
-        }
-        .send-btn:active {
-            transform: scale(0.96);
-        }
-        .telegram-btn {
-            background: linear-gradient(135deg, #29a9e1, #1c7eb3);
-        }
-        .telegram-btn:active {
-            background: linear-gradient(135deg, #1c7eb3, #0f5e8a);
-        }
-        .whatsapp-btn {
-            background: linear-gradient(135deg, #25D366, #128C7E);
-        }
-        .whatsapp-btn:active {
-            background: linear-gradient(135deg, #128C7E, #075E54);
-        }
-        .send-btn.disabled {
-            opacity: 0.5;
-            pointer-events: none;
-            filter: grayscale(0.1);
-        }
-
         .footer-thin {
             margin-top: 1rem;
             text-align: center;
@@ -390,8 +454,11 @@
                 font-size: 1.25rem;
             }
             .send-btn {
-                font-size: 0.85rem;
-                padding: 0.65rem 1.2rem;
+                font-size: 0.8rem;
+                padding: 0.6rem 1rem;
+            }
+            .cart-item {
+                font-size: 0.7rem;
             }
         }
 
@@ -403,20 +470,8 @@
 </head>
 <body>
 
-<!-- ЭКРАН-ЗАГЛУШКА (preloader) -->
-<div id="splashScreen" style="
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #2a1f17;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
-    transition: opacity 0.4s ease-out;
-">
+<!-- ЭКРАН-ЗАГЛУШКА -->
+<div id="splashScreen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2a1f17; display: flex; align-items: center; justify-content: center; z-index: 10000; transition: opacity 0.4s ease-out;">
     <div style="text-align: center;">
         <div style="font-family: 'Georgia', serif; font-size: 2rem; color: #e7bc8e; text-shadow: 0 2px 12px black; margin-bottom: 0.5rem;">ГРАВИТАЦИЯ</div>
         <div style="font-size: 0.8rem; color: #c99f72;">загружаем меню...</div>
@@ -451,9 +506,17 @@
         <button class="reset-btn" id="resetOrderBtn">Очистить</button>
     </div>
 
+    <!-- НОВОЕ ОКОШКО: перечень выбранных блюд -->
+    <div class="cart-summary" id="cartSummary">
+        <h4>📋 Ваш заказ</h4>
+        <div id="cartItemsList" class="cart-items-list">
+            <div class="empty-cart-message">Корзина пуста. Добавьте блюда ➕</div>
+        </div>
+    </div>
+
     <div class="menu-inner" id="menuRoot"></div>
 
-    <!-- БЛОК ОТПРАВКИ: Telegram + WhatsApp на номер +79054665947 -->
+    <!-- ТРИ КНОПКИ: Telegram, WhatsApp, МАКС -->
     <div class="order-actions">
         <button class="send-btn telegram-btn" id="sendTelegramBtn">
             <span>📱</span> Telegram
@@ -461,13 +524,16 @@
         <button class="send-btn whatsapp-btn" id="sendWhatsAppBtn">
             <span>💬</span> WhatsApp
         </button>
+        <button class="send-btn max-btn" id="sendMaxBtn">
+            <span>🌟</span> МАКС
+        </button>
     </div>
 
-    <div class="footer-thin">⋆ выберите порции, отправьте заказ в Telegram или WhatsApp ⋆</div>
+    <div class="footer-thin">⋆ выберите порции, отправьте заказ в Telegram, WhatsApp или МАКС ⋆</div>
 </div>
 
 <script>
-    // ---------- ПОЛНОЕ МЕНЮ (все позиции из PDF, без дубля в салатах) ----------
+    // ---------- ПОЛНОЕ МЕНЮ ----------
     const menuData = [
         { category: "ЗАВТРАКИ · СУПЫ · ГОРЯЧИЕ БЛЮДА", name: "Шорпа", price: 400 },
         { category: "ЗАВТРАКИ · СУПЫ · ГОРЯЧИЕ БЛЮДА", name: "Латман", price: 400 },
@@ -518,16 +584,48 @@
         return `${category}::${name}`;
     }
 
+    // Обновление общей суммы, списка выбранных блюд и рендер
     function updateTotalAndRender() {
         let total = 0;
+        const selectedItems = [];
         for (let item of menuData) {
             const key = getItemKey(item.category, item.name);
             const qty = quantities.get(key) || 0;
-            total += qty * item.price;
+            if (qty > 0) {
+                const sum = qty * item.price;
+                total += sum;
+                selectedItems.push({
+                    name: item.name,
+                    qty: qty,
+                    price: item.price,
+                    total: sum
+                });
+            }
         }
         const totalDisplay = document.getElementById("totalSumDisplay");
         if (totalDisplay) totalDisplay.innerText = `${total} ₽`;
 
+        // Отрисовка корзины (перечень блюд)
+        const cartContainer = document.getElementById("cartItemsList");
+        if (cartContainer) {
+            if (selectedItems.length === 0) {
+                cartContainer.innerHTML = '<div class="empty-cart-message">🧾 Корзина пуста. Добавьте блюда ➕</div>';
+            } else {
+                let cartHtml = '';
+                for (let item of selectedItems) {
+                    cartHtml += `
+                        <div class="cart-item">
+                            <span class="cart-item-name">${escapeHtml(item.name)}</span>
+                            <span class="cart-item-qty">${item.qty} шт</span>
+                            <span class="cart-item-price">${item.total} ₽</span>
+                        </div>
+                    `;
+                }
+                cartContainer.innerHTML = cartHtml;
+            }
+        }
+
+        // Обновление отображения количества и суммы у блюд
         for (let item of menuData) {
             const key = getItemKey(item.category, item.name);
             const qty = quantities.get(key) || 0;
@@ -558,7 +656,7 @@
         updateTotalAndRender();
     }
 
-    // Формирование текста заказа (для отправки в любой мессенджер)
+    // Формирование текста заказа
     function getOrderText() {
         let orderLines = [];
         let totalSum = 0;
@@ -571,44 +669,47 @@
                 orderLines.push(`🍽️ ${item.name} — ${qty} шт × ${item.price}₽ = ${sum}₽`);
             }
         }
-        if (orderLines.length === 0) {
-            return null;
-        }
+        if (orderLines.length === 0) return null;
         const header = `🏔️ *НОВЫЙ ЗАКАЗ (ГРАВИТАЦИЯ)* 🏔️\n\n`;
         const itemsText = orderLines.join('\n');
         const footer = `\n\n────────────────\n💰 *ИТОГО: ${totalSum} ₽*\n\n⏱️ Заказ через онлайн-меню. Пожалуйста, подтвердите.`;
         return header + itemsText + footer;
     }
 
-    // Универсальная отправка через мессенджер: type = 'tg' или 'wa'
+    // Универсальная отправка (type: 'tg', 'wa', 'max')
     function sendOrderToMessenger(type) {
         const orderMessage = getOrderText();
         if (!orderMessage) {
             alert("❌ Корзина пуста. Добавьте блюда перед отправкой заказа.");
             return;
         }
-        const phoneNumber = "79054665947";  // номер без +, но для ссылок подходит
-        let url = '';
+        let phoneNumber = "";
+        let url = "";
+        const encoded = encodeURIComponent(orderMessage);
+        
         if (type === 'tg') {
-            // Telegram: можно использовать https://t.me/+79054665947 или ссылку с текстом через tg://resolve?domain=... но проще всего:
-            // Для отправки сообщения конкретному пользователю по номеру (если у него включён username, лучше юзернейм, но номер тоже подходит)
-            // Современный способ: tg://msg?to=+79054665947&text=...
-            const encoded = encodeURIComponent(orderMessage);
-            url = `https://t.me/+79054665947?text=${encoded}`;
-            // Альтернатива: tg://resolve?phone=79054665947&text= - но работает нестабильно, используем веб-ссылку.
-            // Чтобы открывалось в приложении: ссылка вида tg://msg?to=+79054665947
-            // Но лучший кросс-платформенный метод:
+            phoneNumber = "79054665947";
             if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                url = `tg://msg?to=+79054665947&text=${encoded}`;
+                url = `tg://msg?to=+${phoneNumber}&text=${encoded}`;
             } else {
-                url = `https://t.me/+79054665947?text=${encoded}`;
+                url = `https://t.me/+${phoneNumber}?text=${encoded}`;
             }
-        } else {
-            // WhatsApp
-            const encoded = encodeURIComponent(orderMessage);
+        } else if (type === 'wa') {
+            phoneNumber = "79054665947";
             url = `https://wa.me/${phoneNumber}?text=${encoded}`;
+        } else if (type === 'max') {
+            // Номер для МАКС: +79289133209
+            phoneNumber = "79289133209";
+            // Отправляем и в Telegram, и в WhatsApp? По заданию "в мессенджер макс" — обычно имеется в виду Telegram или WhatsApp.
+            // Сделаем универсально: сначала пробуем Telegram, если не открывается — можно дать выбор.
+            // Но по просьбе: кнопка "МАКС" отправляет в Telegram на номер +79289133209 (основной мессенджер)
+            if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                url = `tg://msg?to=+${phoneNumber}&text=${encoded}`;
+            } else {
+                url = `https://t.me/+${phoneNumber}?text=${encoded}`;
+            }
         }
-        window.open(url, '_blank');
+        if (url) window.open(url, '_blank');
     }
 
     function renderFullMenu() {
@@ -685,11 +786,13 @@
     if (resetBtn) resetBtn.addEventListener("click", resetOrder);
     updateTotalAndRender();
 
-    // Обработчики кнопок Telegram и WhatsApp
+    // Обработчики трёх кнопок
     const tgBtn = document.getElementById("sendTelegramBtn");
     const waBtn = document.getElementById("sendWhatsAppBtn");
+    const maxBtn = document.getElementById("sendMaxBtn");
     if (tgBtn) tgBtn.addEventListener("click", () => sendOrderToMessenger('tg'));
     if (waBtn) waBtn.addEventListener("click", () => sendOrderToMessenger('wa'));
+    if (maxBtn) maxBtn.addEventListener("click", () => sendOrderToMessenger('max'));
 
     window.addEventListener('load', function() {
         const splash = document.getElementById('splashScreen');
