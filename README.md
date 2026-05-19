@@ -182,6 +182,8 @@
             max-height: 180px;
             overflow-y: auto;
             padding-right: 5px;
+            /* Плавные изменения */
+            transition: all 0.1s ease;
         }
         .cart-item {
             display: flex;
@@ -191,6 +193,8 @@
             padding: 6px 0;
             border-bottom: 1px dashed rgba(231, 188, 142, 0.2);
             color: #f0e3d4;
+            /* Плавное появление/исчезновение */
+            transition: opacity 0.15s ease, transform 0.15s ease;
         }
         .cart-item-name {
             font-weight: 500;
@@ -213,6 +217,7 @@
             text-align: center;
             padding: 12px 0;
             font-style: italic;
+            transition: opacity 0.2s ease;
         }
 
         .order-actions {
@@ -569,11 +574,13 @@
     ];
 
     let quantities = new Map();
+    let updateTimeout = null;
 
     function getItemKey(category, name) {
         return `${category}::${name}`;
     }
 
+    // Плавное обновление без дерганья — обновляем только изменённые элементы
     function updateTotalAndRender() {
         let total = 0;
         const selectedItems = [];
@@ -584,6 +591,7 @@
                 const sum = qty * item.price;
                 total += sum;
                 selectedItems.push({
+                    key: key,
                     name: item.name,
                     qty: qty,
                     price: item.price,
@@ -591,28 +599,52 @@
                 });
             }
         }
+        
+        // Обновляем общую сумму
         const totalDisplay = document.getElementById("totalSumDisplay");
         if (totalDisplay) totalDisplay.innerText = `${total} ₽`;
 
+        // Плавно обновляем список заказа
         const cartContainer = document.getElementById("cartItemsList");
         if (cartContainer) {
+            // Получаем текущие элементы в корзине для сравнения
+            const existingItems = new Map();
+            const currentCartItems = cartContainer.querySelectorAll('.cart-item');
+            currentCartItems.forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (key) existingItems.set(key, el);
+            });
+            
             if (selectedItems.length === 0) {
+                // Если корзина пуста, показываем сообщение
+                if (cartContainer.querySelector('.empty-cart-message')) return;
                 cartContainer.innerHTML = '<div class="empty-cart-message">🧾 Корзина пуста. Добавьте блюда ➕</div>';
             } else {
-                let cartHtml = '';
+                // Строим HTML для новых элементов
+                let newHtml = '';
                 for (let item of selectedItems) {
-                    cartHtml += `
-                        <div class="cart-item">
+                    newHtml += `
+                        <div class="cart-item" data-key="${escapeAttr(item.key)}">
                             <span class="cart-item-name">${escapeHtml(item.name)}</span>
                             <span class="cart-item-qty">${item.qty} шт</span>
                             <span class="cart-item-price">${item.total} ₽</span>
                         </div>
                     `;
                 }
-                cartContainer.innerHTML = cartHtml;
+                
+                // Если содержимое изменилось — обновляем без мигания
+                const currentHtml = cartContainer.innerHTML;
+                if (currentHtml !== newHtml) {
+                    cartContainer.style.opacity = '0.6';
+                    setTimeout(() => {
+                        cartContainer.innerHTML = newHtml;
+                        cartContainer.style.opacity = '1';
+                    }, 80);
+                }
             }
         }
 
+        // Плавно обновляем количество и сумму у карточек блюд
         for (let item of menuData) {
             const key = getItemKey(item.category, item.name);
             const qty = quantities.get(key) || 0;
@@ -620,8 +652,13 @@
             const safeKey = key.replace(/['"\\]/g, '');
             const qtySpan = document.querySelector(`.qty-num[data-key="${CSS.escape(safeKey)}"]`);
             const totalSpan = document.querySelector(`.item-total-val[data-key="${CSS.escape(safeKey)}"]`);
-            if (qtySpan) qtySpan.innerText = qty;
-            if (totalSpan) totalSpan.innerText = `${itemTotal} ₽`;
+            if (qtySpan) {
+                if (qtySpan.innerText != qty) qtySpan.innerText = qty;
+            }
+            if (totalSpan) {
+                const newTotalText = `${itemTotal} ₽`;
+                if (totalSpan.innerText != newTotalText) totalSpan.innerText = newTotalText;
+            }
         }
     }
 
@@ -635,6 +672,7 @@
         } else {
             quantities.set(key, newQty);
         }
+        // Плавное обновление без дёрганья
         updateTotalAndRender();
     }
 
@@ -662,7 +700,6 @@
         return header + itemsText + footer;
     }
 
-    // Отправка в Telegram
     function sendToTelegram() {
         const orderMessage = getOrderText();
         if (!orderMessage) {
@@ -680,7 +717,6 @@
         window.open(url, '_blank');
     }
 
-    // Отправка в WhatsApp
     function sendToWhatsApp() {
         const orderMessage = getOrderText();
         if (!orderMessage) {
@@ -693,7 +729,6 @@
         window.open(url, '_blank');
     }
 
-    // Отправка в MAX (через веб-версию — стабильно работает всегда)
     function sendToMax() {
         const orderMessage = getOrderText();
         if (!orderMessage) {
@@ -701,18 +736,10 @@
             return;
         }
         const encodedMessage = encodeURIComponent(orderMessage);
-        // Используем веб-версию MAX — работает стабильно на всех устройствах
-        // Пользователь сможет отправить сообщение после открытия чата
         const maxWebUrl = `https://web.max.ru/new?text=${encodedMessage}`;
-        
-        // Также пробуем открыть deep link (если приложение установлено)
-        // Номер получателя: +79289133209
         const maxDeepLink = `max://chat?phone=79289133209&text=${encodedMessage}`;
         
-        // Сначала пробуем открыть в приложении (если установлено)
         const maxWindow = window.open(maxDeepLink, '_blank');
-        
-        // Через небольшую задержку открываем веб-версию, если приложение не открылось
         setTimeout(() => {
             if (!maxWindow || maxWindow.closed || typeof maxWindow.closed === 'undefined') {
                 window.open(maxWebUrl, '_blank');
@@ -783,6 +810,17 @@
     function escapeHtml(str) {
         return str.replace(/[&<>]/g, function(m) {
             if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function escapeAttr(str) {
+        return str.replace(/['"&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '"') return '&quot;';
+            if (m === "'") return '&#39;';
             if (m === '<') return '&lt;';
             if (m === '>') return '&gt;';
             return m;
