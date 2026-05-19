@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -192,7 +192,7 @@
             padding: 6px 0;
             border-bottom: 1px dashed rgba(231, 188, 142, 0.2);
             color: #f0e3d4;
-            transition: opacity 0.15s ease, transform 0.15s ease;
+            transition: opacity 0.15s ease;
         }
         .cart-item-name {
             font-weight: 500;
@@ -215,7 +215,6 @@
             text-align: center;
             padding: 12px 0;
             font-style: italic;
-            transition: opacity 0.2s ease;
         }
 
         .order-actions {
@@ -223,25 +222,24 @@
             display: flex;
             flex-direction: row;
             justify-content: center;
-            gap: 12px;
+            gap: 16px;
             flex-wrap: wrap;
         }
         .send-btn {
             border: none;
             color: white;
             font-weight: 700;
-            font-size: 0.9rem;
-            padding: 0.7rem 1.2rem;
+            font-size: 1rem;
+            padding: 0.8rem 1.5rem;
             border-radius: 60px;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             cursor: pointer;
             transition: all 0.2s ease;
             box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
             font-family: inherit;
             letter-spacing: 0.3px;
-            backdrop-filter: blur(2px);
             flex: 0 1 auto;
         }
         .send-btn:active {
@@ -258,12 +256,6 @@
         }
         .whatsapp-btn:active {
             background: linear-gradient(135deg, #128C7E, #075E54);
-        }
-        .max-btn {
-            background: linear-gradient(135deg, #9b59b6, #8e44ad);
-        }
-        .max-btn:active {
-            background: linear-gradient(135deg, #8e44ad, #6c3483);
         }
 
         .menu-inner {
@@ -449,8 +441,8 @@
                 font-size: 1.25rem;
             }
             .send-btn {
-                font-size: 0.8rem;
-                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+                padding: 0.6rem 1.2rem;
             }
             .cart-item {
                 font-size: 0.7rem;
@@ -517,12 +509,9 @@
         <button class="send-btn whatsapp-btn" id="sendWhatsAppBtn">
             <span>💬</span> WhatsApp
         </button>
-        <button class="send-btn max-btn" id="sendMaxBtn">
-            <span>🌟</span> MAX
-        </button>
     </div>
 
-    <div class="footer-thin">⋆ выберите порции, отправьте заказ в Telegram, WhatsApp или MAX ⋆</div>
+    <div class="footer-thin">⋆ выберите порции, отправьте заказ в Telegram или WhatsApp ⋆</div>
 </div>
 
 <script>
@@ -705,37 +694,6 @@
         window.open(url, '_blank');
     }
 
-    // МАКС: используем пригласительную ссылку в чат с официантом
-    // После перехода гость может вставить скопированный текст заказа
-    function sendToMax() {
-        const orderMessage = getOrderText();
-        if (!orderMessage) {
-            alert("❌ Корзина пуста. Добавьте блюда перед отправкой заказа.");
-            return;
-        }
-        
-        // Копируем текст заказа в буфер обмена
-        navigator.clipboard.writeText(orderMessage).then(() => {
-            // Показываем уведомление и открываем чат MAX по ссылке-приглашению
-            const userConfirmed = confirm(
-                "✅ Текст заказа скопирован!\n\n" +
-                "Нажмите OK, чтобы открыть чат с официантом в MAX.\n" +
-                "Останется только вставить сообщение (зажать поле ввода → Вставить) и отправить."
-            );
-            
-            if (userConfirmed) {
-                // Пригласительная ссылка в чат с официантом
-                const maxInviteLink = "https://max.ru/join/b-vPVONXOT_jySjMb_mZWErDR8nISNgP7i1niOpmrVw";
-                window.open(maxInviteLink, '_blank');
-            }
-        }).catch(() => {
-            // Если не удалось скопировать автоматически, показываем текст для ручного копирования
-            alert("❌ Не удалось скопировать текст автоматически.\n\nСкопируйте заказ вручную:\n\n" + orderMessage);
-            const maxInviteLink = "https://max.ru/join/b-vPVONXOT_jySjMb_mZWErDR8nISNgP7i1niOpmrVw";
-            window.open(maxInviteLink, '_blank');
-        });
-    }
-
     function renderFullMenu() {
         const menuRoot = document.getElementById("menuRoot");
         if (!menuRoot) return;
@@ -823,10 +781,8 @@
 
     const tgBtn = document.getElementById("sendTelegramBtn");
     const waBtn = document.getElementById("sendWhatsAppBtn");
-    const maxBtn = document.getElementById("sendMaxBtn");
     if (tgBtn) tgBtn.addEventListener("click", sendToTelegram);
     if (waBtn) waBtn.addEventListener("click", sendToWhatsApp);
-    if (maxBtn) maxBtn.addEventListener("click", sendToMax);
 
     window.addEventListener('load', function() {
         const splash = document.getElementById('splashScreen');
