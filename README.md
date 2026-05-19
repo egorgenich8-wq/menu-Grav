@@ -515,7 +515,7 @@
             <span>💬</span> WhatsApp
         </button>
         <button class="send-btn max-btn" id="sendMaxBtn">
-            <span>🌟</span> MAX (Россия)
+            <span>🌟</span> MAX
         </button>
     </div>
 
@@ -523,7 +523,7 @@
 </div>
 
 <script>
-    // ---------- МЕНЮ С ИСПРАВЛЕНИЯМИ: Лагман, Форель ----------
+    // ---------- МЕНЮ ----------
     const menuData = [
         { category: "ЗАВТРАКИ · СУПЫ · ГОРЯЧИЕ БЛЮДА", name: "Шорпа", price: 400 },
         { category: "ЗАВТРАКИ · СУПЫ · ГОРЯЧИЕ БЛЮДА", name: "Лагман", price: 400 },
@@ -662,32 +662,7 @@
         return header + itemsText + footer;
     }
 
-    // Отправка в российский мессенджер MAX
-    function sendToMax() {
-        const orderMessage = getOrderText();
-        if (!orderMessage) {
-            alert("❌ Корзина пуста. Добавьте блюда перед отправкой заказа.");
-            return;
-        }
-        const phoneNumber = "79289133209";
-        const encodedMessage = encodeURIComponent(orderMessage);
-        
-        // Мессенджер MAX использует схему max:// или https://max.me/
-        // Пробуем оба варианта: сначала deep link max://, если не открывается — веб-версия
-        const maxDeepLink = `max://chat?phone=${phoneNumber}&text=${encodedMessage}`;
-        const maxWebLink = `https://max.me/chat?phone=${phoneNumber}&text=${encodedMessage}`;
-        
-        // Сначала пробуем открыть deep link (если установлено приложение)
-        const maxWindow = window.open(maxDeepLink, '_blank');
-        
-        // Если deep link не сработал (или пользователь на десктопе), через небольшую задержку открываем веб-версию
-        setTimeout(() => {
-            if (!maxWindow || maxWindow.closed || typeof maxWindow.closed === 'undefined') {
-                window.open(maxWebLink, '_blank');
-            }
-        }, 800);
-    }
-
+    // Отправка в Telegram
     function sendToTelegram() {
         const orderMessage = getOrderText();
         if (!orderMessage) {
@@ -705,6 +680,7 @@
         window.open(url, '_blank');
     }
 
+    // Отправка в WhatsApp
     function sendToWhatsApp() {
         const orderMessage = getOrderText();
         if (!orderMessage) {
@@ -715,6 +691,33 @@
         const encoded = encodeURIComponent(orderMessage);
         const url = `https://wa.me/${phoneNumber}?text=${encoded}`;
         window.open(url, '_blank');
+    }
+
+    // Отправка в MAX (через веб-версию — стабильно работает всегда)
+    function sendToMax() {
+        const orderMessage = getOrderText();
+        if (!orderMessage) {
+            alert("❌ Корзина пуста. Добавьте блюда перед отправкой заказа.");
+            return;
+        }
+        const encodedMessage = encodeURIComponent(orderMessage);
+        // Используем веб-версию MAX — работает стабильно на всех устройствах
+        // Пользователь сможет отправить сообщение после открытия чата
+        const maxWebUrl = `https://web.max.ru/new?text=${encodedMessage}`;
+        
+        // Также пробуем открыть deep link (если приложение установлено)
+        // Номер получателя: +79289133209
+        const maxDeepLink = `max://chat?phone=79289133209&text=${encodedMessage}`;
+        
+        // Сначала пробуем открыть в приложении (если установлено)
+        const maxWindow = window.open(maxDeepLink, '_blank');
+        
+        // Через небольшую задержку открываем веб-версию, если приложение не открылось
+        setTimeout(() => {
+            if (!maxWindow || maxWindow.closed || typeof maxWindow.closed === 'undefined') {
+                window.open(maxWebUrl, '_blank');
+            }
+        }, 800);
     }
 
     function renderFullMenu() {
