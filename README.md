@@ -106,7 +106,6 @@
             text-shadow: 0 1px 2px black;
         }
 
-        /* Панель заказа */
         .order-panel {
             background: rgba(45, 31, 24, 0.85);
             backdrop-filter: blur(8px);
@@ -160,7 +159,6 @@
             color: #2a1f17;
         }
 
-        /* ОКОШКО С ПЕРЕЧНЕМ ВЫБРАННЫХ БЛЮД */
         .cart-summary {
             background: rgba(36, 26, 20, 0.8);
             backdrop-filter: blur(8px);
@@ -217,7 +215,6 @@
             font-style: italic;
         }
 
-        /* БЛОК С ТРЕМЯ КНОПКАМИ: Telegram + WhatsApp + МАКС */
         .order-actions {
             margin: 0.5rem 1rem 1.5rem 1rem;
             display: flex;
@@ -264,11 +261,6 @@
         }
         .max-btn:active {
             background: linear-gradient(135deg, #8e44ad, #6c3483);
-        }
-        .send-btn.disabled {
-            opacity: 0.5;
-            pointer-events: none;
-            filter: grayscale(0.1);
         }
 
         .menu-inner {
@@ -506,7 +498,6 @@
         <button class="reset-btn" id="resetOrderBtn">Очистить</button>
     </div>
 
-    <!-- НОВОЕ ОКОШКО: перечень выбранных блюд -->
     <div class="cart-summary" id="cartSummary">
         <h4>📋 Ваш заказ</h4>
         <div id="cartItemsList" class="cart-items-list">
@@ -516,7 +507,6 @@
 
     <div class="menu-inner" id="menuRoot"></div>
 
-    <!-- ТРИ КНОПКИ: Telegram, WhatsApp, МАКС -->
     <div class="order-actions">
         <button class="send-btn telegram-btn" id="sendTelegramBtn">
             <span>📱</span> Telegram
@@ -525,18 +515,18 @@
             <span>💬</span> WhatsApp
         </button>
         <button class="send-btn max-btn" id="sendMaxBtn">
-            <span>🌟</span> МАКС
+            <span>🌟</span> MAX (Россия)
         </button>
     </div>
 
-    <div class="footer-thin">⋆ выберите порции, отправьте заказ в Telegram, WhatsApp или МАКС ⋆</div>
+    <div class="footer-thin">⋆ выберите порции, отправьте заказ в Telegram, WhatsApp или MAX ⋆</div>
 </div>
 
 <script>
-    // ---------- ПОЛНОЕ МЕНЮ ----------
+    // ---------- МЕНЮ С ИСПРАВЛЕНИЯМИ: Лагман, Форель ----------
     const menuData = [
         { category: "ЗАВТРАКИ · СУПЫ · ГОРЯЧИЕ БЛЮДА", name: "Шорпа", price: 400 },
-        { category: "ЗАВТРАКИ · СУПЫ · ГОРЯЧИЕ БЛЮДА", name: "Латман", price: 400 },
+        { category: "ЗАВТРАКИ · СУПЫ · ГОРЯЧИЕ БЛЮДА", name: "Лагман", price: 400 },
         { category: "ЗАВТРАКИ · СУПЫ · ГОРЯЧИЕ БЛЮДА", name: "Манты", price: 400 },
         { category: "ЗАВТРАКИ · СУПЫ · ГОРЯЧИЕ БЛЮДА", name: "Омлет", price: 250 },
         { category: "ЗАВТРАКИ · СУПЫ · ГОРЯЧИЕ БЛЮДА", name: "Шакшука", price: 250 },
@@ -563,7 +553,7 @@
         { category: "ШАШЛЫК · БЛЮДА НА МАНГАЛЕ", name: "Тепятина мякоть", price: 1000 },
         { category: "ШАШЛЫК · БЛЮДА НА МАНГАЛЕ", name: "Куриный шашлык", price: 700 },
         { category: "ШАШЛЫК · БЛЮДА НА МАНГАЛЕ", name: "Жау-баур", price: 400 },
-        { category: "ШАШЛЫК · БЛЮДА НА МАНГАЛЕ", name: "Форель порц", price: 800 },
+        { category: "ШАШЛЫК · БЛЮДА НА МАНГАЛЕ", name: "Форель", price: 800 },
         { category: "ШАШЛЫК · БЛЮДА НА МАНГАЛЕ", name: "Люля", price: 300 },
         { category: "ШАШЛЫК · БЛЮДА НА МАНГАЛЕ", name: "Овощи на мангале", price: 450 },
         { category: "ШАШЛЫК · БЛЮДА НА МАНГАЛЕ", name: "Карп", price: 750 },
@@ -584,7 +574,6 @@
         return `${category}::${name}`;
     }
 
-    // Обновление общей суммы, списка выбранных блюд и рендер
     function updateTotalAndRender() {
         let total = 0;
         const selectedItems = [];
@@ -605,7 +594,6 @@
         const totalDisplay = document.getElementById("totalSumDisplay");
         if (totalDisplay) totalDisplay.innerText = `${total} ₽`;
 
-        // Отрисовка корзины (перечень блюд)
         const cartContainer = document.getElementById("cartItemsList");
         if (cartContainer) {
             if (selectedItems.length === 0) {
@@ -625,7 +613,6 @@
             }
         }
 
-        // Обновление отображения количества и суммы у блюд
         for (let item of menuData) {
             const key = getItemKey(item.category, item.name);
             const qty = quantities.get(key) || 0;
@@ -656,7 +643,6 @@
         updateTotalAndRender();
     }
 
-    // Формирование текста заказа
     function getOrderText() {
         let orderLines = [];
         let totalSum = 0;
@@ -676,40 +662,59 @@
         return header + itemsText + footer;
     }
 
-    // Универсальная отправка (type: 'tg', 'wa', 'max')
-    function sendOrderToMessenger(type) {
+    // Отправка в российский мессенджер MAX
+    function sendToMax() {
         const orderMessage = getOrderText();
         if (!orderMessage) {
             alert("❌ Корзина пуста. Добавьте блюда перед отправкой заказа.");
             return;
         }
-        let phoneNumber = "";
-        let url = "";
-        const encoded = encodeURIComponent(orderMessage);
+        const phoneNumber = "79289133209";
+        const encodedMessage = encodeURIComponent(orderMessage);
         
-        if (type === 'tg') {
-            phoneNumber = "79054665947";
-            if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                url = `tg://msg?to=+${phoneNumber}&text=${encoded}`;
-            } else {
-                url = `https://t.me/+${phoneNumber}?text=${encoded}`;
+        // Мессенджер MAX использует схему max:// или https://max.me/
+        // Пробуем оба варианта: сначала deep link max://, если не открывается — веб-версия
+        const maxDeepLink = `max://chat?phone=${phoneNumber}&text=${encodedMessage}`;
+        const maxWebLink = `https://max.me/chat?phone=${phoneNumber}&text=${encodedMessage}`;
+        
+        // Сначала пробуем открыть deep link (если установлено приложение)
+        const maxWindow = window.open(maxDeepLink, '_blank');
+        
+        // Если deep link не сработал (или пользователь на десктопе), через небольшую задержку открываем веб-версию
+        setTimeout(() => {
+            if (!maxWindow || maxWindow.closed || typeof maxWindow.closed === 'undefined') {
+                window.open(maxWebLink, '_blank');
             }
-        } else if (type === 'wa') {
-            phoneNumber = "79054665947";
-            url = `https://wa.me/${phoneNumber}?text=${encoded}`;
-        } else if (type === 'max') {
-            // Номер для МАКС: +79289133209
-            phoneNumber = "79289133209";
-            // Отправляем и в Telegram, и в WhatsApp? По заданию "в мессенджер макс" — обычно имеется в виду Telegram или WhatsApp.
-            // Сделаем универсально: сначала пробуем Telegram, если не открывается — можно дать выбор.
-            // Но по просьбе: кнопка "МАКС" отправляет в Telegram на номер +79289133209 (основной мессенджер)
-            if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                url = `tg://msg?to=+${phoneNumber}&text=${encoded}`;
-            } else {
-                url = `https://t.me/+${phoneNumber}?text=${encoded}`;
-            }
+        }, 800);
+    }
+
+    function sendToTelegram() {
+        const orderMessage = getOrderText();
+        if (!orderMessage) {
+            alert("❌ Корзина пуста. Добавьте блюда перед отправкой заказа.");
+            return;
         }
-        if (url) window.open(url, '_blank');
+        const phoneNumber = "79054665947";
+        const encoded = encodeURIComponent(orderMessage);
+        let url;
+        if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            url = `tg://msg?to=+${phoneNumber}&text=${encoded}`;
+        } else {
+            url = `https://t.me/+${phoneNumber}?text=${encoded}`;
+        }
+        window.open(url, '_blank');
+    }
+
+    function sendToWhatsApp() {
+        const orderMessage = getOrderText();
+        if (!orderMessage) {
+            alert("❌ Корзина пуста. Добавьте блюда перед отправкой заказа.");
+            return;
+        }
+        const phoneNumber = "79054665947";
+        const encoded = encodeURIComponent(orderMessage);
+        const url = `https://wa.me/${phoneNumber}?text=${encoded}`;
+        window.open(url, '_blank');
     }
 
     function renderFullMenu() {
@@ -786,13 +791,12 @@
     if (resetBtn) resetBtn.addEventListener("click", resetOrder);
     updateTotalAndRender();
 
-    // Обработчики трёх кнопок
     const tgBtn = document.getElementById("sendTelegramBtn");
     const waBtn = document.getElementById("sendWhatsAppBtn");
     const maxBtn = document.getElementById("sendMaxBtn");
-    if (tgBtn) tgBtn.addEventListener("click", () => sendOrderToMessenger('tg'));
-    if (waBtn) waBtn.addEventListener("click", () => sendOrderToMessenger('wa'));
-    if (maxBtn) maxBtn.addEventListener("click", () => sendOrderToMessenger('max'));
+    if (tgBtn) tgBtn.addEventListener("click", sendToTelegram);
+    if (waBtn) waBtn.addEventListener("click", sendToWhatsApp);
+    if (maxBtn) maxBtn.addEventListener("click", sendToMax);
 
     window.addEventListener('load', function() {
         const splash = document.getElementById('splashScreen');
