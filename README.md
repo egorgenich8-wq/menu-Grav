@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -182,7 +182,6 @@
             max-height: 180px;
             overflow-y: auto;
             padding-right: 5px;
-            /* Плавные изменения */
             transition: all 0.1s ease;
         }
         .cart-item {
@@ -193,7 +192,6 @@
             padding: 6px 0;
             border-bottom: 1px dashed rgba(231, 188, 142, 0.2);
             color: #f0e3d4;
-            /* Плавное появление/исчезновение */
             transition: opacity 0.15s ease, transform 0.15s ease;
         }
         .cart-item-name {
@@ -574,13 +572,11 @@
     ];
 
     let quantities = new Map();
-    let updateTimeout = null;
 
     function getItemKey(category, name) {
         return `${category}::${name}`;
     }
 
-    // Плавное обновление без дерганья — обновляем только изменённые элементы
     function updateTotalAndRender() {
         let total = 0;
         const selectedItems = [];
@@ -600,27 +596,14 @@
             }
         }
         
-        // Обновляем общую сумму
         const totalDisplay = document.getElementById("totalSumDisplay");
         if (totalDisplay) totalDisplay.innerText = `${total} ₽`;
 
-        // Плавно обновляем список заказа
         const cartContainer = document.getElementById("cartItemsList");
         if (cartContainer) {
-            // Получаем текущие элементы в корзине для сравнения
-            const existingItems = new Map();
-            const currentCartItems = cartContainer.querySelectorAll('.cart-item');
-            currentCartItems.forEach(el => {
-                const key = el.getAttribute('data-key');
-                if (key) existingItems.set(key, el);
-            });
-            
             if (selectedItems.length === 0) {
-                // Если корзина пуста, показываем сообщение
-                if (cartContainer.querySelector('.empty-cart-message')) return;
                 cartContainer.innerHTML = '<div class="empty-cart-message">🧾 Корзина пуста. Добавьте блюда ➕</div>';
             } else {
-                // Строим HTML для новых элементов
                 let newHtml = '';
                 for (let item of selectedItems) {
                     newHtml += `
@@ -631,10 +614,7 @@
                         </div>
                     `;
                 }
-                
-                // Если содержимое изменилось — обновляем без мигания
-                const currentHtml = cartContainer.innerHTML;
-                if (currentHtml !== newHtml) {
+                if (cartContainer.innerHTML !== newHtml) {
                     cartContainer.style.opacity = '0.6';
                     setTimeout(() => {
                         cartContainer.innerHTML = newHtml;
@@ -644,7 +624,6 @@
             }
         }
 
-        // Плавно обновляем количество и сумму у карточек блюд
         for (let item of menuData) {
             const key = getItemKey(item.category, item.name);
             const qty = quantities.get(key) || 0;
@@ -652,9 +631,7 @@
             const safeKey = key.replace(/['"\\]/g, '');
             const qtySpan = document.querySelector(`.qty-num[data-key="${CSS.escape(safeKey)}"]`);
             const totalSpan = document.querySelector(`.item-total-val[data-key="${CSS.escape(safeKey)}"]`);
-            if (qtySpan) {
-                if (qtySpan.innerText != qty) qtySpan.innerText = qty;
-            }
+            if (qtySpan && qtySpan.innerText != qty) qtySpan.innerText = qty;
             if (totalSpan) {
                 const newTotalText = `${itemTotal} ₽`;
                 if (totalSpan.innerText != newTotalText) totalSpan.innerText = newTotalText;
@@ -672,7 +649,6 @@
         } else {
             quantities.set(key, newQty);
         }
-        // Плавное обновление без дёрганья
         updateTotalAndRender();
     }
 
@@ -729,22 +705,35 @@
         window.open(url, '_blank');
     }
 
+    // МАКС: используем пригласительную ссылку в чат с официантом
+    // После перехода гость может вставить скопированный текст заказа
     function sendToMax() {
         const orderMessage = getOrderText();
         if (!orderMessage) {
             alert("❌ Корзина пуста. Добавьте блюда перед отправкой заказа.");
             return;
         }
-        const encodedMessage = encodeURIComponent(orderMessage);
-        const maxWebUrl = `https://web.max.ru/new?text=${encodedMessage}`;
-        const maxDeepLink = `max://chat?phone=79289133209&text=${encodedMessage}`;
         
-        const maxWindow = window.open(maxDeepLink, '_blank');
-        setTimeout(() => {
-            if (!maxWindow || maxWindow.closed || typeof maxWindow.closed === 'undefined') {
-                window.open(maxWebUrl, '_blank');
+        // Копируем текст заказа в буфер обмена
+        navigator.clipboard.writeText(orderMessage).then(() => {
+            // Показываем уведомление и открываем чат MAX по ссылке-приглашению
+            const userConfirmed = confirm(
+                "✅ Текст заказа скопирован!\n\n" +
+                "Нажмите OK, чтобы открыть чат с официантом в MAX.\n" +
+                "Останется только вставить сообщение (зажать поле ввода → Вставить) и отправить."
+            );
+            
+            if (userConfirmed) {
+                // Пригласительная ссылка в чат с официантом
+                const maxInviteLink = "https://max.ru/join/b-vPVONXOT_jySjMb_mZWErDR8nISNgP7i1niOpmrVw";
+                window.open(maxInviteLink, '_blank');
             }
-        }, 800);
+        }).catch(() => {
+            // Если не удалось скопировать автоматически, показываем текст для ручного копирования
+            alert("❌ Не удалось скопировать текст автоматически.\n\nСкопируйте заказ вручную:\n\n" + orderMessage);
+            const maxInviteLink = "https://max.ru/join/b-vPVONXOT_jySjMb_mZWErDR8nISNgP7i1niOpmrVw";
+            window.open(maxInviteLink, '_blank');
+        });
     }
 
     function renderFullMenu() {
